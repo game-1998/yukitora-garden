@@ -1,0 +1,140 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* 全体背景 */
+.yukitora-header {
+  background: #FFF7E3; /* 庭っぽい薄いベージュ */
+  padding: 16px 0 0;
+  text-align: center;
+  position: relative;
+  /* 斜めにそろうドット模様（ハーフオフセット） */
+  background-image:
+    radial-gradient(#ffffff98 4px, transparent 4px),
+    radial-gradient(#ffffff98 4px, transparent 4px);
+
+  /* 1枚目：通常の位置 */
+  background-size: 32px 32px;
+  /* 2枚目：半分ずらす（斜めパターンの核心） */
+  background-position: 0 0, 16px 16px;
+}
+
+/* 内側（小屋＋タイトル＋シルエット） */
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+/* 小屋アイコン */
+.icon-koya {
+  width: 64px;
+  height: auto;
+}
+
+/* ユキトラのシルエット（PCのみ） */
+.icon-yukitora {
+  width: 64px;
+  height: auto;
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.15));
+}
+
+@media (max-width: 600px) {
+  .icon-yukitora {
+    display: none; /* スマホでは非表示 */
+  }
+  .icon-koya {
+    width: 36px;
+  }
+}
+
+/* サイト名 */
+.site-title {
+  font-size: 36px;
+  font-weight: bold;
+  color: #2F5D3A; /* 深緑 */
+  font-family: "Rounded Mplus 1c", "Hiragino Maru Gothic ProN", sans-serif;
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .site-title {
+    font-size: 24px;
+  }
+}
+
+/* 草むらの帯 */
+.grass {
+  width: 100%;
+  height: 28px;
+  background: linear-gradient(#6BBF59, #4E9F3D);
+  border-top: 2px solid #3F7F2D;
+}
+
+@media (max-width: 600px) {
+  .grass {
+    height: 20px;
+  }
+}
+
+main {
+  padding: 24px;
+}
+
+/* ゲーム一覧 */
+.game-list {
+  padding: 24px;
+  display: grid;
+  gap: 24px;
+}
+
+/* PC（幅600px以上）は2列グリッド */
+@media (min-width: 600px) {
+  .game-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 幅900px以上なら3列グリッド（PCの広い画面） */
+@media (min-width: 900px) {
+  .game-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.game-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.game-thumb {
+  width: 100%;
+  max-width: 240px;
+  border-radius: 12px;
+}
+
+.game-title {
+  font-size: 20px;
+  margin: 12px 0 4px;
+  color: #2F5D3A;
+}
+
+.game-desc {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 16px;
+}
+
+.game-link {
+  display: inline-block;
+  padding: 8px 0;       /* 押しやすさUP */
+  text-decoration: none;
+  color: inherit;       /* 緑色を維持 */
+  font-weight: bold;
+}
