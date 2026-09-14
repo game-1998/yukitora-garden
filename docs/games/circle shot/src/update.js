@@ -1,11 +1,13 @@
 import { movePattern1, movePattern2, movePattern3, movePattern4, movePattern5, movePatternBoss } from "./enemyMove.js";
 import { setupEnemySpawn } from "./enemySpawn.js";
 import { setupWave, updateWave } from "./enemyWave.js";
+import { collectItem, spawnItem, updateItems } from "./item.js";
 
 let player = null;
 let enemies = null;
 let bullets = null;
 let enemyBullets = null;
+let items = null;
 let gameOverCallback = null;
 let score = null;
 let killCounts = null;
@@ -13,15 +15,24 @@ let killCounts = null;
 // ===============================
 // 初期化（gameCore.js から呼ばれる）
 // ===============================
-export function setupUpdate(playerRef, enemiesRef, bulletsRef, enemyBulletsRef, onGameOver, scoreRef, killCountsRef) {
+export function setupUpdate(
+  playerRef,
+  enemiesRef,
+  bulletsRef,
+  enemyBulletsRef,
+  itemsRef,
+  onGameOver,
+  scoreRef,
+  killCountsRef
+) {
   player = playerRef;
   enemies = enemiesRef;
   bullets = bulletsRef;
   enemyBullets = enemyBulletsRef;
+  items =itemsRef;
   gameOverCallback = onGameOver;
   score = scoreRef;
   killCounts = killCountsRef;
-  console.log("[SETUP] killCounts in update.js:", killCounts);
   setupEnemySpawn(enemiesRef);
   setupWave(enemies);
 }
@@ -34,6 +45,7 @@ export function updateGame(dt) {
   updateEnemies(dt);
   updateEnemyBullets(dt);
   updateWave(dt);
+  updateItems(dt);
   spawnEnemyBullets(dt);
   spawnPlayerBullets(dt);
   checkCollisions();
@@ -54,17 +66,32 @@ let playerShotTimer = 0;
 function spawnPlayerBullets(dt) {
   playerShotTimer += dt;
 
-  if (playerShotTimer > 0.3) {  // 0.3秒ごとに発射（連射）
+  if (playerShotTimer > 0.3 * player.rapid) {  // 0.3秒ごとに発射（連射）
     playerShotTimer = 0;
 
-    const bullet = {
-      x: player.x,
-      y: player.y - player.radius,
-      radius: 6,
-      speed: 300
-    };
-
-    bullets.push(bullet);
+    if (player.spread) {
+      // 拡散ショット（3WAY）
+      const angles = [-Math.PI / 3, -Math.PI / 2, -Math.PI * 2 / 3];  // 左・中央・右
+      angles.forEach(a => {
+        bullets.push({
+          x: player.x,
+          y: player.y - player.radius,
+          dx: Math.cos(a),
+          dy: Math.sin(a),
+          radius: 6,
+          speed: 300
+        });
+      });
+    } else {
+      bullets.push({
+        x: player.x,
+        y: player.y - player.radius,
+        dx: 0,
+        dy: -1,
+        radius: 6,
+        speed: 300
+      });
+    }
   }
 }
 
@@ -73,11 +100,16 @@ function spawnPlayerBullets(dt) {
 // ===============================
 function updateBullets(dt) {
   bullets.forEach(b => {
-    b.y -= b.speed * dt;
+    b.x += b.dx * b.speed * dt;
+    b.y += b.dy * b.speed * dt;
   });
 
   // 画面外の弾を削除
-  const alive = bullets.filter(b => !b.dead && b.y > -20);
+  const alive = bullets.filter(b =>
+    !b.dead &&
+    b.x > -b.radius && b.x < 480 + b.radius &&
+    b.y > -b.radius && b.y < 720 + b.radius
+  );
   bullets.splice(0, bullets.length, ...alive);
 }
 
@@ -131,7 +163,7 @@ function spawnEnemyBullets(dt) {
     if (!e.shotTimer) e.shotTimer = 0;
     e.shotTimer += dt;
 
-    if (e.shotTimer > 1.0) {  // 1秒ごとに発射
+    if (e.shotTimer > e.shotInterval) {  // 1秒ごとに発射
       e.shotTimer = 0;
 
       const bullet = {
@@ -166,7 +198,7 @@ function spawnBossBullets(e, dt) {
     if (!e.shotTimer) e.shotTimer = 0;
     e.shotTimer += dt;
 
-    if (e.shotTimer > 1.0) {
+    if (e.shotTimer > 0.9) {
       e.shotTimer = 0;
       boss3WayShot(e, 170);
     }
@@ -245,6 +277,17 @@ function updateEnemyBullets(dt) {
 // 当たり判定
 // ===============================
 function checkCollisions() {
+  // 自機 vs アイテム
+  items.forEach(it => {
+    if (!it.collected && hit(player, it)) {
+      collectItem(it);
+      it.collected = true;
+    }
+  });
+
+  // 取得済みアイテムを消す
+  items.splice(0, items.length, ...items.filter(it => !it.collected));
+
   // 自機 vs 敵弾
   enemyBullets.forEach(b => {
     if (hit(player, b)) {
@@ -263,28 +306,28 @@ function checkCollisions() {
   bullets.forEach(b => {
     enemies.forEach(e => {
       if (hit(b, e)) {
-        score.value += 10;  // ショット命中時のスコア加点
+        score.value += 10 * score.multiplier;  // ショット命中時のスコア加点
         e.hp -= 1;   // ダメージ量
         b.dead = true; // 弾を消す
 
         if (e.hp <= 0) {
           e.dead = true;
-          score.value += e.maxHp * 10;  // 撃破ボーナス（敵の最大HP × 10）
+          score.value += e.maxHp * 10 * score.multiplier;  // 撃破ボーナス（敵の最大HP × 10）
 
+          // アイテム生成
+          const drop = Math.random();
+          if (drop < 0.15) spawnItem("rapidUp", e.x, e.y);
+          else if (drop < 0.30) spawnItem("rapidDown", e.x, e.y);
+          else if (drop < 0.45) spawnItem("scoreUp", e.x, e.y);
+          else if (drop < 0.60) spawnItem("scoreDown", e.x, e.y);
+          else if (drop < 0.75) spawnItem("spread", e.x, e.y);
+          else if (drop < 0.90) spawnItem("single", e.x, e.y);
+          
           // 種類別撃破数カウント
-          if (e.isBoss) {
-            killCounts.boss++;
-            console.log("[KILL] boss:", killCounts.boss);
-          } else if (e.type === "large") {
-            killCounts.large++;
-            console.log("[KILL] large:", killCounts.large);
-          } else if (e.type === "medium") {
-            killCounts.medium++;
-            console.log("[KILL] medium:", killCounts.medium);
-          } else {
-            killCounts.small++;
-            console.log("[KILL] small:", killCounts.small);
-          }
+          if (e.isBoss) killCounts.boss++;
+          else if (e.type === "large") killCounts.large++;
+          else if (e.type === "medium") killCounts.medium++;
+          else killCounts.small++;
         }
       }
     });

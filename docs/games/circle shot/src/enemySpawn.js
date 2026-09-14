@@ -28,7 +28,8 @@ export function spawnEnemyByMoveType(moveType) {
   // ===============================
   const e = {
     radius: 20,
-    speed: 80,
+    shotInterval: enemySize === "small" ? 1.2 : enemySize === "medium" ? 1 : 0.8,
+    speed: enemySize === "small" ? 70 : enemySize === "medium" ? 85 : 100,
     time: 0,
     type: enemySize,
     hp: enemySize === "small" ? 3 : enemySize === "medium" ? 5 : 7,

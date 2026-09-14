@@ -1,4 +1,4 @@
-import { showScreen } from "./screens.js";
+import { resizeGame, showScreen } from "./ui.js";
 import { initGame, startGameLoop, getGameState, startPlaying } from "./gameCore.js";
 
 // DOM取得
@@ -50,3 +50,7 @@ document.getElementById("retryBtn").addEventListener("click", () => {
   // タップで開始を再表示
   document.getElementById("tapToStartText").style.display = "block";
 });
+
+// 画面リサイズ
+window.addEventListener("resize", resizeGame);
+window.addEventListener("load", resizeGame);

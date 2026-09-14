@@ -1,3 +1,5 @@
+import { scale } from "./ui.js";
+
 let player = null;
 let canvas = null;
 let gameStateGetter = null; // gameState を参照する関数
@@ -42,8 +44,8 @@ function movePlayer(e) {
     clientY = e.clientY;
   }
 
-  const x = clientX - rect.left;
-  const y = clientY - rect.top;
+  const x = (clientX - rect.left) / scale;
+  const y = (clientY - rect.top) / scale;
 
   player.x = x;
   player.y = y;

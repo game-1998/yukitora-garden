@@ -1,0 +1,323 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+  text-align: center;
+}
+
+#gameWrapper {
+  overflow: hidden;
+  width: 480px;
+  height: 720px;
+  margin: 0 auto;
+  transform-origin: top left;
+}
+
+/* --- タイトル画面 --------------------------------------------------------- */
+/* ===============================
+   タイトル画面（GO画面の世界観に合わせた版）
+   =============================== */
+#titleScreen {
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  color: white;
+  text-align: center;
+  position: relative;
+}
+
+/* タイトル画面の星 */
+#titleScreen .title-stars .star {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #FFF6A0;
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: title-starBlink 2s infinite ease-in-out;
+}
+
+/* 星の配置（タイトル用） */
+#titleScreen .s1 { top: 12%; left: 25%; }
+#titleScreen .s2 { top: 10%; left: 82%; }
+#titleScreen .s3 { top: 50%; left: 15%; }
+#titleScreen .s4 { top: 65%; left: 85%; }
+#titleScreen .s5 { top: 85%; left: 35%; }
+#titleScreen .s6 { top: 22%; left: 45%; }
+#titleScreen .s7 { top: 48%; left: 60%; }
+#titleScreen .s8 { top: 80%; left: 10%; }
+#titleScreen .s9 { top: 27%; left: 70%; }
+#titleScreen .s10 { top: 90%; left: 75%; }
+
+/* GO画面と同じ点滅 */
+@keyframes title-starBlink {
+  0% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+  100% { opacity: 0.4; }
+}
+
+/* ===============================
+   タイトル文字（GO画面の金色発光に合わせる）
+   =============================== */
+#titleScreen h1 {
+  font-size: clamp(24px, 10vw, 48px);
+  letter-spacing: 4px;
+  font-weight: bold;
+  color: #fff;
+  text-shadow:
+    0 0 8px rgba(255,239,168,0.35),
+    0 0 16px rgba(255,239,168,0.25);
+}
+
+/* ボタン共通 */
+#titleScreen button {
+  width: 240px;
+  padding: 14px 0;
+  font-size: 20px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #ffe45c, #ffb300);
+  color: #222;
+  cursor: pointer;
+  box-shadow:
+    0 0 10px rgba(255,200,0,0.6),
+    inset 0 0 8px rgba(255,255,255,0.4);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+#titleScreen button:hover {
+  transform: scale(1.05);
+  box-shadow:
+    0 0 16px rgba(255,220,0,0.9),
+    inset 0 0 10px rgba(255,255,255,0.6);
+}
+
+/* --- ゲーム画面 --------------------------------------------------------- */
+#gameScreen {
+  display: none;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto; /* 中央寄せ */
+}
+
+#tapToStartText {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  display: inline-block;   /* 改行しない */
+  white-space: nowrap;     /* 強制的に1行にする */
+  line-height: 1;          /* 余白を消す */
+
+  font-size: 32px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 8px black;
+
+  pointer-events: none;   /* タップを Canvas に通す */
+  opacity: 0;             /* 最初は非表示 */
+  transition: opacity 0.3s;
+
+  animation: blinkText 1.2s infinite;  /* 点滅アニメーション */
+}
+
+@keyframes blinkText {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.2; }
+  100% { opacity: 1; }
+}
+
+/* --- スコア画面 --------------------------------------------------------- */
+/* オーバーレイ全体 */
+.go-overlay {
+  width: 100%;
+  height: 100%;
+  position: absolute;     /* fixed → absolute に変更 */
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%); /* 中央に合わせる */
+  background: rgba(0,0,0,0.85);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 9999;
+  font-family: "Rounded Mplus 1c", sans-serif;
+  color: white;
+}
+
+
+/* 星の固定配置 */
+.go-stars .star {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #FFF6A0;
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: go-starBlink 2s infinite ease-in-out;
+}
+
+/* 星の位置（決め打ち） */
+.star.s1 { top: 10%; left: 20%; }
+.star.s2 { top: 25%; left: 70%; }
+.star.s3 { top: 40%; left: 15%; }
+.star.s4 { top: 55%; left: 80%; }
+.star.s5 { top: 70%; left: 30%; }
+.star.s6 { top: 15%; left: 50%; }
+.star.s7 { top: 60%; left: 60%; }
+.star.s8 { top: 80%; left: 10%; }
+.star.s9 { top: 35%; left: 40%; }
+.star.s10 { top: 85%; left: 75%; }
+
+/* 星の点滅 */
+@keyframes go-starBlink {
+  0% { opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+
+/* 星型フレーム */
+.go-frame {
+  background: rgba(0,0,0,0.6);
+  border: 3px solid #FFEFA8;
+  padding: 30px 10px;
+  border-radius: 20px;
+  text-align: center;
+  position: relative;
+}
+
+/* GAME OVER */
+.go-title {
+  font-size: 48px;
+  font-weight: bold;
+  color: #FFFFFF;
+  text-shadow: 0 0 10px #FFEFA8;
+  margin-bottom: 20px;
+}
+
+/* スコア */
+.go-score {
+  font-size: 40px;
+  margin-bottom: 20px;
+}
+
+/* 詳細情報 */
+.go-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.go-row {
+  display: grid;
+  grid-template-columns: 40px 20px 70px; /* ● | × | 数字 */
+  align-items: center;
+  justify-items: center;
+  text-align: center;
+  font-size: 20px;
+}
+
+.go-x {
+  color: white;
+}
+
+/* 敵種類アイコン（ゲームオーバー画面用） */
+.go-icon {
+  display: inline-block;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+/* small（緑） */
+.go-icon.small {
+  width: 18px;
+  height: 18px;
+  background: #1e8d22;
+}
+
+/* medium（ピンク） */
+.go-icon.medium {
+  width: 18px;
+  height: 18px;
+  background: #ff008c;
+}
+
+/* large（オレンジ） */
+.go-icon.large {
+  width: 18px;
+  height: 18px;
+  background: #fb5c00;
+}
+
+/* boss（赤） */
+.go-icon.boss {
+  width: 26px;
+  height: 26px;
+  background: #ff0400;
+}
+
+/* ボタン */
+.go-btn {
+  background: #FFEFA8;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  margin: 10px;
+  border-radius: 25px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.go-btn:hover {
+  transform: scale(1.05);
+}
+
+.go-btn:active {
+  transform: scale(0.95);
+}
+
+/* 名前入力欄 */
+.name-entry {
+  margin-top: 20px;
+}
+
+.name-entry.hidden {
+  display: none;
+}
+
+.entry-title {
+  margin-bottom: 10px;
+  color: #FFEFA8;
+}
+
+#playerNameInput {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: none;
+  font-size: 18px;
+  width: 200px;
+  margin-bottom: 10px;
+}
+
+/* ズームイン演出 */
+.zoom-in {
+  animation: zoomIn 0.3s ease-out;
+}
+
+@keyframes zoomIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}

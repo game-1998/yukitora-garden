@@ -1,24 +1,24 @@
 let ctx = null;
 let canvas = null;
-
 let player = null;
 let enemies = null;
 let bullets = null;
 let enemyBullets = null;
+let items = null;
 let score = 0;
 let gameStateGetter = null;
 
 // ===============================
 // 初期化（gameCore.js から呼ばれる）
 // ===============================
-export function setupDraw(context, canvasRef, playerRef, enemiesRef, bulletsRef, enemyBulletsRef, scoreRef, getGameState) {
+export function setupDraw(context, canvasRef, playerRef, enemiesRef, bulletsRef, enemyBulletsRef, itemsRef, scoreRef, getGameState) {
   ctx = context;
   canvas = canvasRef;
-
   player = playerRef;
   enemies = enemiesRef;
   bullets = bulletsRef;
   enemyBullets = enemyBulletsRef;
+  items = itemsRef;
   score = scoreRef;
   gameStateGetter = getGameState;
 }
@@ -42,6 +42,7 @@ export function drawGame() {
     drawBackground();
     drawPlayer();
     drawEnemies();
+    drawItems();
     drawBullets();
     drawEnemyBullets();
   }
@@ -159,11 +160,118 @@ function drawBullets() {
 // 敵弾
 // ===============================
 function drawEnemyBullets() {
-  ctx.fillStyle = "yellow";
+  ctx.fillStyle = "#ffff00";
 
   enemyBullets.forEach(b => {
     ctx.beginPath();
     ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
     ctx.fill();
   });
+}
+
+// ===============================
+// アイテム
+// ===============================
+export function drawItems() {
+  for (const it of items) {
+    const glow = 5 + Math.sin(it.t * 4) * 4;   // blurの大きさを周期的に変化
+    const color = getItemColor(it.type);
+
+    ctx.save();    
+
+    // 影用の枠線（stroke）
+    ctx.shadowBlur = glow;
+    ctx.shadowColor = color;
+    ctx.lineWidth = 2;
+    drawDiamondStroke(it.x, it.y, it.size, color);
+
+    // 本体（ひし形）
+    ctx.shadowBlur = 0;
+    ctx.shadowColor = "transparent";
+    drawDiamond(it.x, it.y, it.size, color);
+    drawItemIcon(it);
+
+    ctx.restore();
+  }
+}
+
+function drawDiamondStroke(x, y, size, color) {
+  ctx.strokeStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(x, y - size);
+  ctx.lineTo(x + size, y);
+  ctx.lineTo(x, y + size);
+  ctx.lineTo(x - size, y);
+  ctx.closePath();
+  ctx.stroke();
+}
+
+function drawDiamond(x, y, size, color) {
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(x, y - size);
+  ctx.lineTo(x + size, y);
+  ctx.lineTo(x, y + size);
+  ctx.lineTo(x - size, y);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function drawItemIcon(it) {
+  ctx.fillStyle = "#fff";
+  ctx.font = "12px sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  switch (it.type) {
+    case "rapidUp":
+      ctx.fillText("UP", it.x, it.y);
+      break;
+
+    case "rapidDown":
+      ctx.fillText("DOWN", it.x, it.y);
+      break;
+
+    case "scoreUp":
+      ctx.fillText("×2", it.x, it.y);
+      break;
+
+    case "scoreDown":
+      ctx.fillText("1/2", it.x, it.y);
+      break;
+
+    case "spread":
+      ctx.beginPath();
+      ctx.arc(it.x, it.y - 5.3, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(it.x - 4.5, it.y + 2.5, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(it.x + 4.5, it.y + 2.5, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+      break;
+
+    case "single":
+      ctx.beginPath();
+      ctx.arc(it.x, it.y, 3, 0, Math.PI * 2);
+      ctx.fill();
+      break;
+  }
+}
+
+function getItemColor(type) {
+  switch (type) {
+    case "rapidUp":
+    case "scoreUp":
+    case "spread":
+      return "#f1b500"; // ゴールド
+
+    case "rapidDown":
+    case "scoreDown":
+    case "single":
+      return "#7E57C2"; // 紫
+  }
 }

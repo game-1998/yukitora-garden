@@ -8,6 +8,7 @@ import { initUpdateState, setupUpdate, updateGame } from "./update.js";
 import { checkIsTop100 } from "./ranking.js";
 import { showGameOver } from "./gameOver.js";
 import { initWave } from "./enemyWave.js";
+import { setupItem } from "./item.js";
 
 // ===============================
 // ゲーム状態
@@ -22,7 +23,8 @@ let player = null;
 let enemies = [];
 let bullets = [];
 let enemyBullets = [];
-let score = { value: 0};
+let items = [];
+let score = { value: 0, multiplier: 1};
 let killCounts = {
   small: 0,
   medium: 0,
@@ -38,10 +40,12 @@ export function initGame() {
   canvas = document.getElementById("gameCanvas");
   ctx = canvas.getContext("2d");
 
-  player = { x: 240, y: 600, radius: 12 };
+  player = { x: 240, y: 600, radius: 12, rapid: 1, spread: false };
+  score = {value: 0, multiplier: 1};
   enemies = [];
   bullets = [];
   enemyBullets = [];
+  items = [];
 
   // 撃破数リセット
   killCounts.small = 0;
@@ -49,15 +53,14 @@ export function initGame() {
   killCounts.large = 0;
   killCounts.boss = 0;
 
-  score.value = 0;
-
   // 他ファイルの変数初期化
   initWave();
   initUpdateState();
 
   setupInput(player, canvas, () => gameState);
-  setupDraw(ctx, canvas, player, enemies, bullets, enemyBullets, score, () => gameState);
-  setupUpdate(player, enemies, bullets, enemyBullets, gameOver, score, killCounts);
+  setupDraw(ctx, canvas, player, enemies, bullets, enemyBullets, items, score, () => gameState);
+  setupUpdate(player, enemies, bullets, enemyBullets, items, gameOver, score, killCounts);
+  setupItem(items, player, score);
 
   // 状態変更
   gameState = "gameReady";
@@ -97,7 +100,6 @@ function loop(time) {
 export function gameOver() {
   gameState = "result";
   isLoopRunning = false;
-  console.log("[GAME OVER] killCounts in gameCore.js:", killCounts);
 
   // ランキング100位以内かどうか（仮の関数）
   const isTop100 = checkIsTop100(score.value);
