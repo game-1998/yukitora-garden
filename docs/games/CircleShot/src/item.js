@@ -39,14 +39,14 @@ export function updateItems(dt) {
 export function collectItem(item) {
   switch (item.type) {
     case "rapidUp":
-      if (player.rapid > 0.5) {
-        player.rapid *= 0.5;
+      if (player.rapid > 0.625) {
+        player.rapid *= 0.625;
       }
       break;
 
     case "rapidDown":
-      if (player.rapid < 2) {
-        player.rapid *= 2;
+      if (player.rapid < 1.6) {
+        player.rapid *= 1.6;
       }
       break;
 

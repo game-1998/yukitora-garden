@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>サークルショット</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div id="gameWrapper">
+    <!-- タイトル画面 -->
+    <div id="titleScreen">
+      <!-- 決め打ち星（固定配置） -->
+      <div class="title-stars">
+        <div class="star s1"></div>
+        <div class="star s2"></div>
+        <div class="star s3"></div>
+        <div class="star s4"></div>
+        <div class="star s5"></div>
+        <div class="star s6"></div>
+        <div class="star s7"></div>
+        <div class="star s8"></div>
+        <div class="star s9"></div>
+        <div class="star s10"></div>
+      </div>
+
+      <h1>サークルショット</h1>
+      <button id="startButton">ゲーム開始</button>
+      <button id="howToButton">遊び方</button>
+    </div>
+
+    <!-- 遊び方画面 -->
+    <!-- モーダル全体 -->
+    <div id="howtoModal" class="howto-modal">
+
+      <!-- モーダルの中身（スライド全体） -->
+      <div class="howto-content">
+
+        <div id="howtoSlides" class="howto-slides">
+
+          <!-- 1ページ目 -->
+          <div class="howto-slide">
+            <img src="src/img/howToPage1.png" class="howto-img" width="100%">
+            <div class="howto-text">
+              画面上のプレイヤー(<span style="color:#0066FF">●</span>)を
+              操作し、迫ってくる敵や弾を避けながら敵を倒すだけのシンプルなシューティングゲームです。<br>
+              敵を倒したときにランダムに出現するアイテムを取ると、ショットの種類や連射スピード、
+              スコア倍率が変化し、状況に応じた戦い方が求められます。<br>
+              アイテムを使いこなしハイスコアを目指しましょう!!<br><br>
+              ※基本スコア：敵にショットを当てる ⇒ 10Pt<br>
+              <span class="indent">敵を倒す ⇒ 倒した敵HP分のPt</span>
+            </div>
+
+            <span id="pageNo">(1/3)</span>
+          </div>
+
+          <!-- 2ページ目 -->
+          <div class="howto-slide">
+            <p id="slide-title">アイテム種類</p>
+            <div class="howto-item">
+              <img src="src/img/spreadShot.png" class="howto-item-img">
+              <div class="howto-text">正面と斜め前方の3方向同時ショットに変わる</div>
+            </div>
+            
+            <div class="howto-item">
+              <img src="src/img/singleShot.png" class="howto-item-img">
+              <div class="howto-text">正面のみのシングルショット（通常）に戻る</div>
+            </div>
+            
+            <div class="howto-item">
+              <img src="src/img/rapidUp.png" class="howto-item-img">
+              <div class="howto-text">ショットの連射がスピードが上がる<br>（上限：ゲーム開始時から1段階UP）</div>
+            </div>
+            
+            <div class="howto-item">
+              <img src="src/img/rapidDown.png" class="howto-item-img">
+              <div class="howto-text">ショットの連射スピードが下がる<br>（下限：ゲーム開始時から1段階DOWN）</div>
+            </div>
+            
+            <div class="howto-item">
+              <img src="src/img/scoreUp.png" class="howto-item-img">
+              <div class="howto-text">得られるスコアが今の2倍になる<br>（上限：基本スコアの2倍）</div>
+            </div>
+            
+            <div class="howto-item">
+              <img src="src/img/scoreDown.png" class="howto-item-img">
+              <div class="howto-text">得られるスコアが今の半分になる<br>（下限：基本スコアの半分）</div>
+            </div>
+
+            <span id="pageNo">(2/3)</span>
+          </div>
+          
+
+          <!-- 3ページ目 -->
+          <div class="howto-slide">
+            <p id="slide-title">敵種類</p>
+            <div class="howto-enemy">
+              <span id="small-enemy">●</span>
+              <div style="font-size: 40px; text-align: left; width: 100%;">：</div>
+              <div class="howto-text">HP：3<br>ショット：遅め</div>
+            </div>
+            
+            <div class="howto-enemy">
+              <span id="midium-enemy">●</span>
+              <div style="font-size: 40px; text-align: left; width: 100%;">：</div>
+              <div class="howto-text">HP：5<br>ショット：普通</div>
+            </div>
+            
+            <div class="howto-enemy">
+              <span id="large-enemy">●</span>
+              <div style="font-size: 40px; text-align: left; width: 100%;">：</div>
+              <div class="howto-text">HP：7<br>ショット：速め</div>
+            </div>
+            
+            <div class="howto-enemy">
+              <span id="boss-enemy">●</span>
+              <div style="font-size: 40px; text-align: left; width: 100%;">：</div>
+              <div class="howto-text">
+                HP：100<br>ショット：前半は普通、後半は速い<br>後半は時々特殊ショットを撃ってくる
+              </div>
+            </div>
+            
+            <span id="pageNo">(3/3)</span>
+          </div>
+          
+        </div>
+
+        <!-- ナビゲーション -->
+        <div class="howto-nav">
+          <button id="howtoPrev">◀</button>
+          <button id="howtoClose" class="howto-close">閉じる</button>
+          <button id="howtoNext">▶</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ゲーム画面 -->
+    <div id="gameScreen" style="display:none;">
+      <canvas id="gameCanvas" width="480" height="720"></canvas>
+      <p id="tapToStartText">タップでゲーム開始</p>
+
+      <div id="gameOverOverlay" class="go-overlay">
+
+        <!-- 決め打ち星（固定配置） -->
+        <div class="go-stars">
+          <div class="star s1"></div>
+          <div class="star s2"></div>
+          <div class="star s3"></div>
+          <div class="star s4"></div>
+          <div class="star s5"></div>
+          <div class="star s6"></div>
+          <div class="star s7"></div>
+          <div class="star s8"></div>
+          <div class="star s9"></div>
+          <div class="star s10"></div>
+        </div>
+
+        <!-- 星型フレーム（GAME OVER） -->
+        <div class="go-frame zoom-in">
+          <div class="go-title">GAME OVER</div>
+
+          <div class="go-score zoom-in">
+            <span id="finalScore">0</span>
+          </div>
+
+          <!-- 撃破数 -->
+          <div class="go-details">
+            <div class="go-row">
+              <span class="go-icon small"></span>
+              <span class="go-x">×</span>
+              <span id="killSmall"></span>
+            </div>
+
+            <div class="go-row">
+              <span class="go-icon medium"></span>
+              <span class="go-x">×</span>
+              <span id="killMedium"></span>
+            </div>
+
+            <div class="go-row">
+              <span class="go-icon large"></span>
+              <span class="go-x">×</span>
+              <span id="killLarge"></span>
+            </div>
+
+            <div class="go-row">
+              <span class="go-icon boss"></span>
+              <span class="go-x">×</span>
+              <span id="killBoss"></span>
+            </div>
+          </div>
+
+          <div class="go-buttons">
+            <button class="go-btn" id="retryBtn">もう一度プレイ</button>
+            <button class="go-btn" id="rankingBtn">ランキングを見る</button>
+          </div>
+
+          <!-- ランキング登録（100位以内のときだけ表示） -->
+          <div id="nameEntry" class="name-entry hidden">
+            <p class="entry-title">あなたのスコアは100位以内です！</p>
+            <input id="playerNameInput" type="text" maxlength="12" placeholder="名前を入力">
+            <button class="go-btn" id="submitNameBtn">登録する</button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>eruda.init();</script>
+
+  <script type="module" src="src/main.js?v=202604026"></script>
+</body>
+</html>

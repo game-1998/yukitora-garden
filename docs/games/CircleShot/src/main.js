@@ -1,11 +1,15 @@
 import { resizeGame, showScreen } from "./ui.js";
 import { initGame, startGameLoop, getGameState, startPlaying } from "./gameCore.js";
+import { setupHowToSlides } from "./howToSlides.js";
 
 // DOM取得
 const startButton = document.getElementById("startButton");
 const howToButton = document.getElementById("howToButton");
 const backToTitle = document.getElementById("backToTitle");
 const canvas = document.getElementById("gameCanvas");
+
+// 遊び方画面の初期化設定
+setupHowToSlides();
 
 // タイトル → ゲーム画面
 startButton.addEventListener("click", () => {
@@ -16,13 +20,8 @@ startButton.addEventListener("click", () => {
 });
 
 // タイトル → 遊び方
-howToButton.addEventListener("click", () => {
-  showScreen("howToScreen");
-});
-
-// 遊び方 → タイトル
-backToTitle.addEventListener("click", () => {
-  showScreen("titleScreen");
+document.getElementById("howToButton").addEventListener("click", () => {
+  document.getElementById("howtoModal").style.display = "flex";
 });
 
 // ゲーム画面でタップしたらゲーム開始

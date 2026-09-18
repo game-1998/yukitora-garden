@@ -165,6 +165,7 @@ function spawnEnemyBullets(dt) {
 
     if (e.shotTimer > e.shotInterval) {  // 1秒ごとに発射
       e.shotTimer = 0;
+      const speed = e.type === "small" ? 140 :  e.type === "midium" ? 160 : 180;
 
       const bullet = {
         x: e.x,
@@ -172,7 +173,7 @@ function spawnEnemyBullets(dt) {
         dx: 0,
         dy: 1,
         radius: 6,
-        speed: 150
+        speed
       };
 
       enemyBullets.push(bullet);
@@ -189,7 +190,7 @@ function spawnBossBullets(e, dt) {
 
     if (e.shotTimer > 1.2) {
       e.shotTimer = 0;
-      boss3WayShot(e, 130);
+      boss3WayShot(e, 160);
     }
   }
 
@@ -200,7 +201,7 @@ function spawnBossBullets(e, dt) {
 
     if (e.shotTimer > 0.9) {
       e.shotTimer = 0;
-      boss3WayShot(e, 170);
+      boss3WayShot(e, 200);
     }
 
     // 円形弾は別の charge ロジックで発射
@@ -315,13 +316,20 @@ function checkCollisions() {
           score.value += e.maxHp * 10 * score.multiplier;  // 撃破ボーナス（敵の最大HP × 10）
 
           // アイテム生成
-          const drop = Math.random();
-          if (drop < 0.15) spawnItem("rapidUp", e.x, e.y);
-          else if (drop < 0.30) spawnItem("rapidDown", e.x, e.y);
-          else if (drop < 0.45) spawnItem("scoreUp", e.x, e.y);
-          else if (drop < 0.60) spawnItem("scoreDown", e.x, e.y);
-          else if (drop < 0.75) spawnItem("spread", e.x, e.y);
-          else if (drop < 0.90) spawnItem("single", e.x, e.y);
+          const dropChance = 0.3; // 30%でアイテムが出る
+          if (Math.random() < dropChance) {
+            const types = [
+              "rapidUp",
+              "rapidDown",
+              "scoreUp",
+              "scoreDown",
+              "spread",
+              "single"
+            ];
+
+            const type = types[Math.floor(Math.random() * types.length)];
+            spawnItem(type, e.x, e.y);
+          }
           
           // 種類別撃破数カウント
           if (e.isBoss) killCounts.boss++;

@@ -47,25 +47,30 @@ export function movePattern3(e, dt) {
 
 export function movePattern4(e, dt) {
   if (e.phase === "enter") {
-    e.y += e.speed * dt;
+    e.y += e.speed * 1.8 * dt;
     e.x = e.startX + e.dir * e.xOffset + Math.sin(e.time * 3) * 80; // 固定振幅40
-    if (e.y >= 400) e.phase = "wave";
+    if (e.y >= 350 + e.yOffset) e.phase = "wave";
   }
   else if (e.phase === "wave") {
     e.x = e.startX + e.dir * e.xOffset + Math.sin(e.time * 3) * 80;
-    e.y -= e.speed * dt;
+    e.y -= e.speed * 1.8 * dt;
 
-    if (e.y < 100 || e.y > 400) {
+    if (e.y <= 50 + e.yOffset && e.speed > 0) {
       e.speed *= -1;
+      e.count++;
+    }
+    else if (e.y >= 350 + e.yOffset && e.speed < 0) {
+      e.speed *= -1;
+      e.count++;
     }
 
-    if (e.time >= Math.PI * 4) { // 3往復（2π × 3）
+    if (e.count > 4) { // 3往復（2π × 3）
       e.phase = "exit";
     }
   }
   else if (e.phase === "exit") {
     e.x = e.startX + e.dir * e.xOffset + Math.sin(e.time * 3) * 80;
-    e.y += e.speed * dt;
+    e.y += e.speed * 1.8 * dt;
   }
 }
 
@@ -154,7 +159,7 @@ function bossPhase2(e, dt) {
       e.shotDelay = 0;
 
       const angle = e.shotQueue[e.shotIndex];
-      spawnEnemyBullet(e.x, e.y, Math.cos(angle), Math.sin(angle), 150);
+      spawnEnemyBullet(e.x, e.y, Math.cos(angle), Math.sin(angle), 170);
 
       e.shotIndex++;
 
