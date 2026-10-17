@@ -1,3 +1,5 @@
+import { playSE } from "./sound.js";
+
 let enemiesRef = null;
 
 export function setupEnemySpawn(enemies) {
@@ -72,6 +74,7 @@ export function spawnEnemyByMoveType(moveType) {
 
     // pattern による初期位置設定をスキップするため return
     enemiesRef.push(e);
+    playSE("bossAppear");
     return;
   }
 

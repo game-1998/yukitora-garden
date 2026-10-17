@@ -40,16 +40,24 @@ export async function showRankingModal() {
   const ranking = await fetchRanking();
   const myId = window.auth.currentUser.uid;
 
-  ranking.forEach((r, i) => {
+  ranking.slice(0, 99).forEach((r, i) => {
     const row = document.createElement("div");
     row.className = "rank-row";
 
-    if (r.userId === myId) row.classList.add("me");
+    // 自分の順位をハイライト
+    if (r.userId === myId) {
+      row.classList.add("me");
+    }
+
+    // 1〜3位の特別色
+    if (i === 0) row.classList.add("gold");
+    if (i === 1) row.classList.add("silver");
+    if (i === 2) row.classList.add("bronze");
 
     row.innerHTML = `
       <div>${i + 1}位</div>
       <div>${r.name ?? "名無し"}</div>
-      <div>${r.score}</div>
+      <div>${Number(r.score).toLocaleString()}</div>
     `;
 
     listEl.appendChild(row);
@@ -57,3 +65,4 @@ export async function showRankingModal() {
 
   document.getElementById("rankingModal").style.display = "flex";
 }
+

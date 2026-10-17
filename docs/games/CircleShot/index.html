@@ -8,7 +8,7 @@
 </head>
 
 <body>
-  <div id="gameWrapper">
+  <div id="gameWrapper" style="display:none;">
     <!-- タイトル画面 -->
     <div id="titleScreen">
       <!-- 決め打ち星（固定配置） -->
@@ -25,14 +25,34 @@
         <div class="star s10"></div>
       </div>
 
+      <div id="settingsPanel" class="settings-panel">
+        <h2>設定</h2>
+        <button id="changeNameButton">プレイヤー名変更</button>
+        <button id="creditToggleBtn">クレジット</button>
+
+      </div>
+
+      <button id="settingsBtn" class="settings-btn">⚙️</button>
+
+
       <h1>サークルショット</h1>
       <button id="startButton">ゲーム開始</button>
       <button id="howToButton">遊び方</button>
       <button id="rankingButton">ランキング</button>
-      <button id="changeNameButton">プレイヤー名変更</button>
 
       <div id="playerNameDisplay"></div>
 
+    </div>
+
+    <!-- クレジット表記 -->
+    <div id="creditModal" class="modal">
+      <div class="modal-content credit-modal">
+        <div id="creditCloseBtn" class="modal-close">×</div>
+        <h2>クレジット</h2>
+        <p>◆ 音源提供 ◆</p>
+        <span>・OtoLogic（CC BY 4.0）</span><br>
+        <span>・効果音ラボ</span>
+      </div>
     </div>
 
     <!-- 名前入力モーダル -->
@@ -229,10 +249,7 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-  <script>eruda.init();</script>
-
   <script type="module" src="src/firebaseInit.js"></script>
-  <script type="module" src="src/main.js?v=202604026"></script>
+  <script type="module" src="src/main.js?v=1.00"></script>
 </body>
 </html>

@@ -6,7 +6,7 @@ export async function initUser() {
     return;
   }
 
-  const userId = authUser.uid; // ← これが本番用のユーザーID
+  const userId = authUser.uid;
 
   const userRef = window.doc(window.db, "users", userId);
   const userSnap = await getDoc(userRef);
@@ -75,6 +75,7 @@ document.getElementById("closeNameModalBtn").onclick = () => {
   hideNameModal();
 };
 
+// タイトル画面にプレイヤー名を表示
 function updatePlayerNameDisplay(name) {
   const el = document.getElementById("playerNameDisplay");
   if (el) el.textContent = `プレイヤー名：${name}`;

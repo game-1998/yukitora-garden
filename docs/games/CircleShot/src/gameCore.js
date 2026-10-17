@@ -8,6 +8,7 @@ import { initUpdateState, setupUpdate, updateGame } from "./update.js";
 import { showGameOver, submitScoreToServer } from "./gameOver.js";
 import { initWave } from "./enemyWave.js";
 import { setupItem } from "./item.js";
+import { playBGM, stopBGM } from "./sound.js";
 
 // ===============================
 // ゲーム状態
@@ -99,6 +100,7 @@ function loop(time) {
 export function gameOver() {
   gameState = "result";
   isLoopRunning = false;
+  stopBGM();
 
   // スコア送信
   submitScoreToServer(score.value);
@@ -114,5 +116,6 @@ export function getGameState() {
 export function startPlaying() {
   if (gameState === "gameReady") {
     gameState = "playing";
+    playBGM();
   }
 }

@@ -4,6 +4,7 @@ html, body {
   overflow: hidden;
   overscroll-behavior: none;
   text-align: center;
+  font-family: "Noto Sans JP", sans-serif;
 }
 
 #gameWrapper {
@@ -44,16 +45,16 @@ html, body {
 }
 
 /* 星の配置（タイトル用） */
-#titleScreen .s1 { top: 11%; left: 22%; }
-#titleScreen .s2 { top: 13%; left: 53%; }
-#titleScreen .s3 { top: 7%; left: 82%; }
+#titleScreen .s1 { top: 11%; left: 20%; }
+#titleScreen .s2 { top: 16%; left: 53%; }
+#titleScreen .s3 { top: 14%; left: 85%; }
 #titleScreen .s4 { top: 38%; left: 8%; }
-#titleScreen .s5 { top: 35%; left: 93%; }
-#titleScreen .s6 { top: 62%; left: 18%; }
-#titleScreen .s7 { top: 65%; left: 82%; }
-#titleScreen .s8 { top: 88%; left: 10%; }
-#titleScreen .s9 { top: 92%; left: 90%; }
-#titleScreen .s10 { top: 96%; left: 47%; }
+#titleScreen .s5 { top: 39%; left: 93%; }
+#titleScreen .s6 { top: 65%; left: 17%; }
+#titleScreen .s7 { top: 63%; left: 82%; }
+#titleScreen .s8 { top: 90%; left: 10%; }
+#titleScreen .s9 { top: 88%; left: 90%; }
+#titleScreen .s10 { top: 95%; left: 47%; }
 
 /* GO画面と同じ点滅 */
 @keyframes title-starBlink {
@@ -62,9 +63,7 @@ html, body {
   100% { opacity: 0.4; }
 }
 
-/* ===============================
-   タイトル文字（GO画面の金色発光に合わせる）
-   =============================== */
+/* タイトル文字（GO画面の金色発光に合わせる）  */
 #titleScreen h1 {
   font-size: clamp(24px, 10vw, 48px);
   letter-spacing: 4px;
@@ -101,14 +100,79 @@ html, body {
     inset 0 0 10px rgba(255,255,255,0.6);
 }
 
+/* 設定ボタン（右上の円形） */
+#titleScreen .settings-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(4px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: unset;
+  font-size: 22px;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+  transition: 0.2s;
+  z-index: 1000;
+}
+
+#titleScreen .settings-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: unset;
+  transform: scale(1.05);
+}
+
 #playerNameDisplay {
   position: absolute;
-  top: 90%;
+  top: 85%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 20px;
 }
 
+/* --- 設定画面 ------------------------------------------------------ */
+.settings-panel {
+  position: fixed;
+  top: 0;
+  right: -300px; /* 初期は隠す */
+  padding: 20px;
+  padding-top: 50px;
+  background: #262d38;
+  transition: right 0.3s ease;
+  z-index: 20;
+}
+
+.settings-panel.open {
+  right: 0;
+}
+
+#titleScreen #changeNameButton, #titleScreen #creditToggleBtn {
+  all: unset;
+  display: block;
+  padding: 10px;
+  background: #ffffff00;
+  color: #fff;
+  cursor: pointer;
+  justify-self: center;
+  font-size: 18px;
+}
+
+#titleScreen #changeNameButton:hover, #titleScreen #creditToggleBtn:hover {
+  transform: scale(1.05);
+}
+
+#creditModal p {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
 /* --- ユーザー登録画面 --------------------------------------------------------- */
 .modal {
   display: none;
@@ -120,6 +184,7 @@ html, body {
   background: rgba(0,0,0,0.5);
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 .modal-content {
@@ -327,7 +392,8 @@ html, body {
 
 /* --- ランキング画面 --------------------------------------------------------- */
 .ranking-modal {
-  width: 70%;
+  width: 75%;
+  height: 80%;
 }
 
 .ranking-title {
@@ -338,11 +404,28 @@ html, body {
 
 .ranking-list {
   margin-top: 20px;
+  max-height: 85%;   /* 画面の60%の高さでスクロール */
+  overflow-y: auto;
+  box-sizing: content-box;
+  scrollbar-width: thin; /* Firefox */
+}
+
+.ranking-list::-webkit-scrollbar {
+  width: 6px; /* Chrome / Edge / Safari */
+}
+
+.ranking-list::-webkit-scrollbar-track {
+  background: transparent; /* 余計な背景を消す */
+}
+
+.ranking-list::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.3); /* うっすら見える */
+  border-radius: 3px;
 }
 
 .rank-row {
   display: grid;
-  grid-template-columns: 3em 1fr 8em;
+  grid-template-columns: 50px 1fr 120px;
   padding: 6px 0;
   border-bottom: 1px solid #444;
 }
@@ -350,6 +433,26 @@ html, body {
 .rank-row.me {
   background: rgba(255,255,255,0.1);
   font-weight: bold;
+}
+
+/* 1〜3位の特別色 */
+.rank-row.gold {
+  background: radial-gradient(circle, #ffd700 0%, #ffee31 40%, #fff398 100%);
+  font-weight: bold;
+  font-size: 24px;
+}
+
+
+.rank-row.silver {
+  background: radial-gradient(#c0c0c0 0%, #cecece 40%, #f1f1f1 100%);
+  font-weight: bold;
+  font-size: 21px;
+}
+
+.rank-row.bronze {
+  background: radial-gradient(#cd7f32 0%, #d88d43 40%, #f0b983 100%);
+  font-weight: bold;
+  font-size: 18px;
 }
 
 /* --- ゲーム画面 --------------------------------------------------------- */

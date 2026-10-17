@@ -1,3 +1,4 @@
+import { playSE } from "./sound.js";
 import { spawnEnemyBullet } from "./update.js";
 
 export function movePattern1(e, dt) {
@@ -129,10 +130,11 @@ function bossPhase1(e, dt) {
   // ===============================
   // 左右にゆっくり揺れる（威圧感＋避け方の学習）
   // ===============================
-  // 振れ幅：±20px、周期：ゆっくり
   e.x += e.speed * dt;
 
-  if (e.x < 50 || 430 < e.x) e.speed *= -1;
+  if (e.x < 50 || 430 < e.x) {
+    e.speed *= -1;
+  }
 }
 
 const bossPoints = [
@@ -160,6 +162,7 @@ function bossPhase2(e, dt) {
 
       const angle = e.shotQueue[e.shotIndex];
       spawnEnemyBullet(e.x, e.y, Math.cos(angle), Math.sin(angle), 170);
+      playSE("bossShot");
 
       e.shotIndex++;
 
@@ -214,4 +217,5 @@ function bossPhase2(e, dt) {
 function bossStartCharge(e) {
   e.state = "charging";
   e.chargeTimer = 0;
+  playSE("charge");
 }

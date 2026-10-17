@@ -2,6 +2,7 @@ import { movePattern1, movePattern2, movePattern3, movePattern4, movePattern5, m
 import { setupEnemySpawn } from "./enemySpawn.js";
 import { setupWave, updateWave } from "./enemyWave.js";
 import { collectItem, spawnItem, updateItems } from "./item.js";
+import { playSE } from "./sound.js";
 
 let player = null;
 let enemies = null;
@@ -92,6 +93,8 @@ function spawnPlayerBullets(dt) {
         speed: 300
       });
     }
+
+    playSE("shot");
   }
 }
 

@@ -10,6 +10,15 @@ const canvas = document.getElementById("gameCanvas");
 // 遊び方画面の初期化設定
 setupHowToSlides();
 
+// 画面リサイズ
+window.addEventListener("resize", resizeGame);
+
+// ロード時初期化
+window.addEventListener("load", () => {
+  resizeGame();
+  document.getElementById("gameWrapper").style.display = "block";
+});
+
 // タイトル → ゲーム画面
 startButton.addEventListener("click", () => {
   showScreen("gameScreen");
@@ -58,10 +67,6 @@ document.getElementById("retryBtn").addEventListener("click", () => {
   document.getElementById("tapToStartText").style.display = "block";
 });
 
-// 画面リサイズ
-window.addEventListener("resize", resizeGame);
-window.addEventListener("load", resizeGame);
-
 // タイトル画面ランキングを閉じる
 document.getElementById("rankingCloseBtn").onclick = () => {
   document.getElementById("rankingModal").style.display = "none";
@@ -71,3 +76,24 @@ document.getElementById("rankingCloseBtn").onclick = () => {
 document.getElementById("rankingButton").onclick = () => {
   showRankingModal();
 };
+
+// 設定画面を開く
+const settingsBtn = document.getElementById("settingsBtn");
+const settingsPanel = document.getElementById("settingsPanel");
+
+settingsBtn.addEventListener("click", () => {
+  settingsPanel.classList.toggle("open");
+});
+
+// クレジット表記を開く
+const creditToggleBtn = document.getElementById("creditToggleBtn");
+const creditModal = document.getElementById("creditModal");
+const creditCloseBtn = document.getElementById("creditCloseBtn");
+
+creditToggleBtn.addEventListener("click", () => {
+  creditModal.style.display = "flex";
+});
+
+creditCloseBtn.addEventListener("click", () => {
+  creditModal.style.display = "none";
+});
